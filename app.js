@@ -418,3 +418,30 @@ function resetForm() {
 }
 
 console.log('%c متجري ','background:#C9A84C;color:#000;font-size:1.2rem;padding:.3rem .8rem;border-radius:4px;font-weight:bold;', '\n🛒 One Product Store — Algeria 🇩🇿');
+// Page Modals
+document.querySelectorAll('[data-modal]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const id = 'modal-' + link.dataset.modal;
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('hidden');
+    requestAnimationFrame(() => el.classList.add('visible'));
+    document.body.style.overflow = 'hidden';
+  });
+});
+document.querySelectorAll('.modal-close-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const el = document.getElementById('modal-' + btn.dataset.close);
+    el.classList.remove('visible');
+    setTimeout(() => { el.classList.add('hidden'); document.body.style.overflow = ''; }, 350);
+  });
+});
+document.querySelectorAll('.page-modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) {
+      overlay.classList.remove('visible');
+      setTimeout(() => { overlay.classList.add('hidden'); document.body.style.overflow = ''; }, 350);
+    }
+  });
+});

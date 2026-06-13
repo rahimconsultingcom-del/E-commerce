@@ -561,3 +561,47 @@ input, textarea, select { font-family:'Tajawal',sans-serif; }
   .hero-stats { flex-wrap:wrap; gap:1rem; }
   .price-new { font-size:1.8rem; }
 }
+/* Page Modals */
+.page-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
+  z-index: 300; display: flex; align-items: center; justify-content: center;
+  padding: 1rem; opacity: 0; transition: opacity .3s ease;
+}
+.page-modal-overlay.visible { opacity: 1; }
+.page-modal-box {
+  background: var(--bg2); border: 1px solid var(--gold-border);
+  border-radius: 20px; width: 100%; max-width: 580px;
+  max-height: 88vh; overflow-y: auto; padding: 2.5rem;
+  position: relative;
+  transform: translateY(20px) scale(.97);
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.page-modal-overlay.visible .page-modal-box { transform: translateY(0) scale(1); }
+.modal-close-btn {
+  position: absolute; top: 1rem; left: 1rem;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--surface2); color: var(--text2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .85rem; cursor: pointer; border: none;
+  transition: all .3s ease;
+}
+.modal-close-btn:hover { background: var(--danger); color: #fff; }
+.page-modal-box h2 {
+  font-size: 1.5rem; font-weight: 900; color: var(--gold);
+  margin-bottom: 1rem; padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.page-modal-box h3 { font-size: 1rem; font-weight: 800; color: var(--white); margin: 1.3rem 0 .5rem; }
+.page-modal-box p { font-size: .9rem; color: var(--text); line-height: 1.85; margin-bottom: .5rem; }
+.contact-items { display: flex; flex-direction: column; gap: .8rem; margin-top: 1.2rem; }
+.contact-item {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 1rem 1.2rem;
+  transition: border-color .3s, transform .3s; cursor: pointer;
+}
+.contact-item:hover { border-color: var(--gold-border); transform: translateX(-4px); }
+.contact-item > span { font-size: 1.6rem; flex-shrink: 0; }
+.contact-item strong { display: block; font-size: .9rem; color: var(--white); margin-bottom: .1rem; }
+.contact-item small { font-size: .8rem; color: var(--text2); }
