@@ -156,8 +156,10 @@ document.querySelectorAll('.faq-q').forEach(btn => {
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
+
       entry.target.style.opacity = '1';
       entry.target.style.transform = 'translateY(0)';
+      observer.unobserve(entry.target);
     }
   });
 }, { threshold: 0.1 });
@@ -239,14 +241,6 @@ function populateWilayas() {
 populateWilayas();
 
 document.getElementById('f-wilaya').addEventListener('change', function () {
-  const bSel = document.getElementById('f-baladia');
-  bSel.innerHTML = '<option value="">— اختر البلدية —</option>';
-  if (!this.value) { bSel.disabled = true; return; }
-  (ALGERIA[this.value] || []).forEach(m => {
-    const o = document.createElement('option');
-    o.value = m; o.textContent = m; bSel.appendChild(o);
-  });
-  bSel.disabled = false;
   document.getElementById('err-wilaya').textContent = '';
 });
 
@@ -287,7 +281,10 @@ function closeOrder() {
   const btn = document.getElementById(id);
   if (btn) btn.addEventListener('click', openOrder);
 });
-document.getElementById('popup-close').addEventListener('click', closeOrder);
+const popupClose = document.getElementById('popup-close');
+if (popupClose) {
+  popupClose.addEventListener('click', closeOrder);
+}
 document.getElementById('order-overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('order-overlay')) closeOrder();
 });
@@ -325,13 +322,14 @@ function validateField(id, errId, fn, msg) {
 
 // SUBMIT
 document.getElementById('submit-btn').addEventListener('click', async () => {
-  const isHome = document.querySelector('input[name="delivery"]:checked').value === 'home';
+  const deliveryEl = document.querySelector('input[name="delivery"]:checked');
+const isHome = deliveryEl ? deliveryEl.value === 'home' : false;
 
   const ok1 = validateField('f-fname', 'err-fname', v => v.length >= 2, 'أدخل الاسم الأول');
   const ok2 = validateField('f-lname', 'err-lname', v => v.length >= 2, 'أدخل اسم العائلة');
   const ok3 = validateField('f-phone', 'err-phone', v => /^(05|06|07)\d{8}$/.test(v.replace(/\s/g,'')), 'أدخل رقم هاتف جزائري صحيح (05x/06x/07x)');
   const ok4 = validateField('f-wilaya', 'err-wilaya', v => v !== '', 'اختر الولاية');
-  const ok5 = validateField('f-baladia', 'err-baladia', v => v !== '', 'اختر البلدية');
+  const ok5 = validateField('f-baladia', 'err-baladia', v => v.length >= 2, 'اكتب اسم مدينتك أو بلديتك');
   const ok6 = !isHome || validateField('f-address', 'err-address', v => v.length >= 5, 'أدخل عنوان المنزل كاملاً');
 
   if (!ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6) {
@@ -353,30 +351,42 @@ document.getElementById('submit-btn').addEventListener('click', async () => {
   btn.textContent = '⏳ جاري الإرسال...';
   btn.disabled = true;
 
-  try {
-    await fetch('https://formspree.io/f/xwvzjeoq', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        '👤 الاسم': fname + ' ' + lname,
-        '📞 الهاتف': phone,
-        '📍 الولاية': wilaya,
-        '🏙️ البلدية': baladia,
-        '🚚 طريقة التوصيل': delivery,
-        '🏠 العنوان': address,
-        '📦 الكمية': qty,
-        '💰 المجموع': total,
-        '_subject': `🛒 طلب جديد من ${fname} ${lname} — ${wilaya}`
-      })
-    });
-  } catch (e) {
-    console.error(e);
+ try {
+  const response = await fetch('https://formspree.io/f/xwvzjeoq', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      '👤 الاسم': fname + ' ' + lname,
+      '📞 الهاتف': phone,
+      '📍 الولاية': wilaya,
+      '🏙️ البلدية': baladia,
+      '🚚 طريقة التوصيل': delivery,
+      '🏠 العنوان': address,
+      '📦 الكمية': qty,
+      '💰 المجموع': total,
+      '_subject': `🛒 طلب جديد من ${fname} ${lname} — ${wilaya}`
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error('فشل إرسال الطلب');
   }
+
+} catch (e) {
+  alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.');
+  console.error(e);
 
   btn.textContent = '✅ تأكيد الطلب';
   btn.disabled = false;
-  closeOrder();
-  resetForm();
+
+  return;
+}
+
+  // تتبع Meta Pixel عند نجاح الطلب
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'Lead');
+    fbq('track', 'Purchase', { value: UNIT_PRICE * parseInt(qty), currency: 'DZD' });
+  }
 
   // شاشة الشكر
   document.getElementById('thank-details').innerHTML = `
@@ -401,16 +411,12 @@ document.getElementById('thank-close').addEventListener('click', () => {
 });
 
 function resetForm() {
-  ['f-fname','f-lname','f-phone','f-address'].forEach(id => {
+  ['f-fname','f-lname','f-phone','f-address','f-baladia'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.value = ''; el.classList.remove('invalid'); }
   });
-  ['f-wilaya','f-baladia'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.value = ''; el.classList.remove('invalid'); }
-  });
-  document.getElementById('f-baladia').disabled = true;
-  document.getElementById('f-baladia').innerHTML = '<option value="">— اختر الولاية أولاً —</option>';
+  const wEl = document.getElementById('f-wilaya');
+  if (wEl) { wEl.value = ''; wEl.classList.remove('invalid'); }
   document.querySelectorAll('.ferr').forEach(e => e.textContent = '');
   qtyInput.value = 1; updateTotal();
   document.querySelector('input[name="delivery"][value="home"]').checked = true;

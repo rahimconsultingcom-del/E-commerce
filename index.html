@@ -22,6 +22,24 @@
 <meta name="author" content="Rahim DZ, abderrahim, bouhadda, mouhamed, namchi, abderrahim, abderahim">
 
 <meta name="robots" content="index, follow">
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', 'YOUR_PIXEL_ID_HERE');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID_HERE&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 
@@ -205,7 +223,7 @@
       </div>
       <div class="review-card">
         <div class="review-stars">★★★★★</div>
-        <p>"الدفع عند الاستلام خياة ممتاز، شعرت بالأمان التام عند الطلب."</p>
+        <p>"الدفع عند الاستلام خيار ممتاز، شعرت بالأمان التام عند الطلب."</p>
         <div class="reviewer"><div class="rev-av">مب</div><div><strong>محمد ب.</strong><span>قسنطينة</span></div></div>
       </div>
       <div class="review-card">
@@ -294,7 +312,7 @@
       <a href="#" data-modal="contact">اتصل بنا</a>
      <a href="#" data-modal="privacy">سياسة الخصوصية</a>
     </div>
-    <p class="footer-copy">© 2025 متجري. جميع الحقوق محفوظة.</p>
+    <p class="footer-copy">© 2026 متجري. جميع الحقوق محفوظة.</p>
   </div>
 </footer>
 
@@ -357,8 +375,8 @@
           <span class="ferr" id="err-wilaya"></span>
         </div>
         <div class="form-group">
-          <label>البلدية <span class="req">*</span></label>
-          <select id="f-baladia" disabled><option value="">— اختر الولاية أولاً —</option></select>
+          <label>المدينة / البلدية <span class="req">*</span></label>
+          <input type="text" id="f-baladia" placeholder="اكتب اسم مدينتك أو بلديتك"/>
           <span class="ferr" id="err-baladia"></span>
         </div>
       </div>
@@ -399,29 +417,7 @@
     </div>
   </div>
 </div>
-<!-- Modal اتصل بنا -->
-<div id="modal-contact" class="page-modal-overlay hidden">
-  <div class="page-modal-box">
-    <button class="modal-close-btn" data-close="contact">✕</button>
-    <h2>📞 اتصل بنا</h2>
-    <p>نحن هنا لمساعدتك في أي وقت. تواصل معنا عبر أي من القنوات التالية:</p>
-    <div class="contact-items">
-      <a href="https://instagram.com/YOUR_USERNAME" target="_blank" class="contact-item">
-        <span>📸</span><div><strong>إنستغرام</strong><small>@YOUR_USERNAME</small></div>
-      </a>
-      <a href="https://facebook.com/YOUR_PAGE" target="_blank" class="contact-item">
-        <span>📘</span><div><strong>فيسبوك</strong><small>YOUR_PAGE</small></div>
-      </a>
-      <a href="mailto:YOUR@EMAIL.com" class="contact-item">
-        <span>✉️</span><div><strong>البريد الإلكتروني</strong><small>YOUR@EMAIL.com</small></div>
-      </a>
-      <a href="https://wa.me/213XXXXXXXXX" target="_blank" class="contact-item">
-        <span>💬</span><div><strong>واتساب</strong><small>+213 XX XX XX XX</small></div>
-      </a>
-    </div>
-    <p style="margin-top:1.5rem;font-size:.85rem;color:var(--text2);">ساعات الدعم: من الأحد إلى الخميس — 9 صباحاً حتى 9 مساءً</p>
-  </div>
-</div>
+
 <!-- Modal اتصل بنا -->
 <div id="modal-contact" class="page-modal-overlay hidden">
   <div class="page-modal-box">
