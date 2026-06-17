@@ -605,3 +605,39 @@ input, textarea, select { font-family:'Tajawal',sans-serif; }
 .contact-item > span { font-size: 1.6rem; flex-shrink: 0; }
 .contact-item strong { display: block; font-size: .9rem; color: var(--white); margin-bottom: .1rem; }
 .contact-item small { font-size: .8rem; color: var(--text2); }
+
+/* ══ أيقونات التواصل الاجتماعي — Footer ══ */
+.footer-socials {
+  display: flex;
+  gap: .8rem;
+  justify-content: center;
+  margin: 1.2rem 0;
+}
+.social-icon {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--gold-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold);
+  transition: all .3s ease;
+}
+.social-icon svg { width: 18px; height: 18px; }
+.social-icon:hover { background: var(--gold); color: #000; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(201,168,76,.4); }
+
+/* ══ أيقونات صفحة اتصل بنا ══ */
+.ci-icon {
+  width: 46px; height: 46px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: transform .3s ease;
+}
+.ci-icon svg { width: 22px; height: 22px; }
+.contact-item:hover .ci-icon { transform: scale(1.1); }
+
+/* ألوان كل منصة */
+.ci-insta { background: linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); color: #fff; }
+.ci-fb    { background: #1877f2; color: #fff; }
+.ci-email { background: var(--gold); color: #000; }
+.ci-wa    { background: #25D366; color: #fff; }
