@@ -270,6 +270,9 @@ function openOrder() {
   ov.classList.remove('hidden');
   requestAnimationFrame(() => ov.classList.add('visible'));
   document.body.style.overflow = 'hidden';
+  if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout');
+  if (typeof ttq !== 'undefined') ttq.track('InitiateCheckout');
+  
 }
 function closeOrder() {
   const ov = document.getElementById('order-overlay');
@@ -382,26 +385,20 @@ const isHome = deliveryEl ? deliveryEl.value === 'home' : false;
   return;
 }
 
-  // تتبع Meta Pixel عند نجاح الطلب
-  if (typeof fbq !== 'undefined') {
-    fbq('track', 'Lead');
-    fbq('track', 'Purchase', { value: UNIT_PRICE * parseInt(qty), currency: 'DZD' });
-  }
-
-  // شاشة الشكر
-  document.getElementById('thank-details').innerHTML = `
-    <strong>الاسم:</strong> ${fname} ${lname}<br/>
-    <strong>الهاتف:</strong> ${phone}<br/>
-    <strong>الولاية:</strong> ${wilaya}<br/>
-    <strong>البلدية:</strong> ${baladia}<br/>
-    <strong>طريقة التوصيل:</strong> ${delivery}<br/>
-    ${isHome ? `<strong>العنوان:</strong> ${address}<br/>` : ''}
-    <strong>الكمية:</strong> ${qty} — <strong>المجموع:</strong> ${total}`;
-
-  const to = document.getElementById('thank-overlay');
-  to.classList.remove('hidden');
-  requestAnimationFrame(() => to.classList.add('visible'));
-  document.body.style.overflow = 'hidden';
+  // التوجيه لصفحة الشكر مع بيانات الطلب في الرابط
+  const params = new URLSearchParams({
+    fname,
+    lname,
+    phone,
+    wilaya,
+    baladia,
+    delivery,
+    address,
+    qty,
+    total,
+    value: UNIT_PRICE * parseInt(qty)
+  });
+  window.location.href = 'thank-you.html?' + params.toString();
 });
 
 document.getElementById('thank-close').addEventListener('click', () => {
