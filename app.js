@@ -355,7 +355,8 @@ const isHome = deliveryEl ? deliveryEl.value === 'home' : false;
   btn.disabled = true;
 
   // إرسال إلى Google Sheets
-  fetch('https://script.google.com/macros/s/AKfycbw_mXi6D7sSZTwoLqdtlEOur-_E_uCy1WtPe_a77xVhVlWFvtFN2gPL9Uq1K77zcNI-xA/exec', {
+  // إرسال إلى Google Sheets (ضع الرابط الجديد هنا)
+  fetch('https://script.google.com/macros/s/AKfycby_eNDfoMjX2zJfeSmhFDoYGbF_gQmoFyBzlnYgDgqggY22ShynTYFs2zhtMABR4KvHbQ/exec', {
     method: 'POST',
     mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
