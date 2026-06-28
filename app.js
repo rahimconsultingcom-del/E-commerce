@@ -354,6 +354,23 @@ const isHome = deliveryEl ? deliveryEl.value === 'home' : false;
   btn.textContent = '⏳ جاري الإرسال...';
   btn.disabled = true;
 
+  // إرسال إلى Google Sheets
+  fetch('https://script.google.com/macros/s/AKfycbx3TsFf88usAhOzojDuD5w7KyZjACEHxwJo7COPH9JSXgBIG878m2jr0HCjpCZvhKSiHA/exec', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: fname + ' ' + lname,
+      phone: phone,
+      state: wilaya,
+      city: baladia,
+      address: address,
+      delivery: delivery,
+      quantity: qty,
+      total: total
+    })
+  });
+
  try {
   const response = await fetch('https://formspree.io/f/xwvzjeoq', {
     method: 'POST',
