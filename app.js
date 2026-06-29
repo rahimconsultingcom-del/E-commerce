@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════
    متجري — app.js
-   Full JS: Animations, Form, Algeria Data, Email (تحديث غوغل شيت الاحترافي)
+   Full JS: Animations, Form, Algeria Data, Email
 ══════════════════════════════════════════ */
 
 // ══════════════════════════════════════════
@@ -76,10 +76,8 @@ let selectedRating = 0;
 window.addEventListener('load', () => {
   setTimeout(() => {
     const loader = document.getElementById('loader');
-    if (loader) {
-      loader.classList.add('out');
-      setTimeout(() => loader.style.display = 'none', 700);
-    }
+    if (loader) loader.classList.add('out');
+    setTimeout(() => { if (loader) loader.style.display = 'none'; }, 700);
   }, 2300);
 });
 
@@ -252,7 +250,8 @@ populateWilayas();
 const fWilaya = document.getElementById('f-wilaya');
 if (fWilaya) {
   fWilaya.addEventListener('change', function () {
-    document.getElementById('err-wilaya').textContent = '';
+    const err = document.getElementById('err-wilaya');
+    if (err) err.textContent = '';
   });
 }
 
@@ -272,7 +271,8 @@ document.querySelectorAll('input[name="delivery"]').forEach(radio => {
           addr.value = '';
           addr.classList.remove('invalid');
         }
-        document.getElementById('err-address').textContent = '';
+        const errAddr = document.getElementById('err-address');
+        if (errAddr) errAddr.textContent = '';
       }
     }
   });
@@ -342,14 +342,15 @@ function validateField(id, errId, fn, msg) {
   const el = document.getElementById(id);
   if (!el) return true;
   const val = el.tagName === 'SELECT' ? el.value : el.value.trim();
+  const errEl = document.getElementById(errId);
   if (!fn(val)) {
     el.classList.add('invalid');
-    document.getElementById(errId).textContent = msg;
+    if (errEl) errEl.textContent = msg;
     el.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}], {duration:300});
     return false;
   }
   el.classList.remove('invalid');
-  document.getElementById(errId).textContent = '';
+  if (errEl) errEl.textContent = '';
   return true;
 }
 
@@ -384,24 +385,24 @@ if (submitBtn) {
     submitBtn.textContent = '⏳ جاري الإرسال...';
     submitBtn.disabled = true;
 
-   // توليد رقم طلب عشوائي ومميز للعميل
+    // توليد رقم طلب عشوائي ومميز وصحيح 100%
     const generatedOrderId = 'DZ-' + Math.floor(100000 + Math.random() * 900000);
 
-    // تجهيز البيانات بالمسميات المتوافقة تماماً مع السكريبت والجدول الجديد
+    // تجهيز البيانات المطابقة تماماً لكود الـ Google Apps Script
     const sheetData = {
       orderId: generatedOrderId,
       name: fname + ' ' + lname,
       phone: phone,
-      wilaya: wilaya, // مطابقة لعمود Wilaya في الشيت
-      city: baladia,  // مطابقة لعمود City في الشيت
+      wilaya: wilaya, 
+      city: baladia,  
       address: address,
       deliveryType: delivery,
-      product: "اسم منتجك الافتراضي", // يمكنك كتابة اسم منتجك هنا مباشرة
-      quantity: parseInt(qty) || 1
+      product: "اسم منتجك الافتراضي", 
+      quantity: qty
     };
 
     try {
-      // إرسال البيانات إلى رابط غوغل شيت الجديد الخاص بك
+      // 1. الإرسال لـ Google Sheets (رابط السكريبت الأخير المصلح)
       await fetch('https://script.google.com/macros/s/AKfycbyyLyxgiNtWa5xCwakRNhr3_i2OK4uzOqIuzcKF7GwdZBUGXE_r7AcXTXSNrcK4Bv83Uw/exec', {
         method: 'POST',
         mode: 'no-cors', 
@@ -410,7 +411,7 @@ if (submitBtn) {
       });
 
       // 2. إرسال النسخة الاحتياطية لـ Formspree
-      const totalText = document.getElementById('total-val').textContent;
+      const totalText = document.getElementById('total-val') ? document.getElementById('total-val').textContent : '';
       await fetch('https://formspree.io/f/xwvzjeoq', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -458,7 +459,7 @@ if (thankClose) {
     const to = document.getElementById('thank-overlay');
     if (to) {
       to.classList.remove('visible');
-      setTimeout(() => { to.classList.add('hidden'); document.body.style.overflow = ''; }, 350);
+      setTimeout(() => { if (to) to.classList.add('hidden'); document.body.style.overflow = ''; }, 350);
     }
   });
 }
