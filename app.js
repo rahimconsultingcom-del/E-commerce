@@ -384,27 +384,27 @@ if (submitBtn) {
     submitBtn.textContent = '⏳ جاري الإرسال...';
     submitBtn.disabled = true;
 
-    // توليد رقم طلب عشوائي ومميز
+   // توليد رقم طلب عشوائي ومميز للعميل
     const generatedOrderId = 'DZ-' + Math.floor(100000 + Math.random() * 900000);
 
-    // تجهيز البيانات المطابقة تماماً لكود الـ Google Apps Script الاحترافي الجديد
+    // تجهيز البيانات بالمسميات المتوافقة تماماً مع السكريبت والجدول الجديد
     const sheetData = {
       orderId: generatedOrderId,
       name: fname + ' ' + lname,
       phone: phone,
-      wilaya: wilaya,
-      city: baladia,
+      wilaya: wilaya, // مطابقة لعمود Wilaya في الشيت
+      city: baladia,  // مطابقة لعمود City في الشيت
       address: address,
       deliveryType: delivery,
-      product: "اسم منتجك الافتراضي", // يمكنك تغييره لاسم المنتج الحقيقي
-      quantity: qty
+      product: "اسم منتجك الافتراضي", // يمكنك كتابة اسم منتجك هنا مباشرة
+      quantity: parseInt(qty) || 1
     };
 
     try {
-      // 1. الإرسال الاحترافي لـ Google Sheets (الرابط الجديد بدون وضع no-cors للتحقق والاعتمادية الأقوى)
-      await fetch('https://script.google.com/macros/s/AKfycbzvssMj8r-dGsH-kWxi_HkzmXy8F1F6GctknC_kvFd5C4TgDbZVBwM_8CWq1uu6g8URFw/exec', {
+      // إرسال البيانات إلى رابط غوغل شيت الجديد الخاص بك
+      await fetch('https://script.google.com/macros/s/AKfycbyyLyxgiNtWa5xCwakRNhr3_i2OK4uzOqIuzcKF7GwdZBUGXE_r7AcXTXSNrcK4Bv83Uw/exec', {
         method: 'POST',
-        mode: 'no-cors', // تم الإبقاء عليه لتفادي مشاكل الـ CORS في المتصفحات مع الـ Apps Script الثابتة
+        mode: 'no-cors', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(sheetData)
       });
