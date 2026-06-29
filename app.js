@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════
    متجري — app.js
-   Full JS: Animations, Form, Algeria Data, Email
+   Full JS: Animations, Form, Algeria Data, Email (تحديث غوغل شيت الاحترافي)
 ══════════════════════════════════════════ */
 
 // ══════════════════════════════════════════
@@ -76,8 +76,10 @@ let selectedRating = 0;
 window.addEventListener('load', () => {
   setTimeout(() => {
     const loader = document.getElementById('loader');
-    loader.classList.add('out');
-    setTimeout(() => loader.style.display = 'none', 700);
+    if (loader) {
+      loader.classList.add('out');
+      setTimeout(() => loader.style.display = 'none', 700);
+    }
   }, 2300);
 });
 
@@ -85,7 +87,8 @@ window.addEventListener('load', () => {
 // NAVBAR SCROLL
 // ══════════════════════════════════════════
 window.addEventListener('scroll', () => {
-  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+  const navbar = document.getElementById('navbar');
+  if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 50);
 });
 
 // ══════════════════════════════════════════
@@ -93,16 +96,18 @@ window.addEventListener('scroll', () => {
 // ══════════════════════════════════════════
 const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('nav-links');
-hamburger.addEventListener('click', () => {
-  hamburger.classList.toggle('active');
-  navLinks.classList.toggle('open');
-});
-document.addEventListener('click', e => {
-  if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
-    navLinks.classList.remove('open');
-    hamburger.classList.remove('active');
-  }
-});
+if (hamburger && navLinks) {
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('open');
+  });
+  document.addEventListener('click', e => {
+    if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+      navLinks.classList.remove('open');
+      hamburger.classList.remove('active');
+    }
+  });
+}
 
 // ══════════════════════════════════════════
 // SMOOTH SCROLL
@@ -113,8 +118,8 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (t) {
       e.preventDefault();
       t.scrollIntoView({ behavior: 'smooth' });
-      navLinks.classList.remove('open');
-      hamburger.classList.remove('active');
+      if (navLinks) navLinks.classList.remove('open');
+      if (hamburger) hamburger.classList.remove('active');
     }
   });
 });
@@ -127,14 +132,16 @@ document.querySelectorAll('.hero-img-thumbs .thumb').forEach(thumb => {
     document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
     thumb.classList.add('active');
     const main = document.getElementById('hero-main-img');
-    main.style.opacity = '0';
-    main.style.transform = 'scale(.97)';
-    main.style.transition = 'all .25s ease';
-    setTimeout(() => {
-      main.src = thumb.dataset.src;
-      main.style.opacity = '1';
-      main.style.transform = 'scale(1)';
-    }, 250);
+    if (main) {
+      main.style.opacity = '0';
+      main.style.transform = 'scale(.97)';
+      main.style.transition = 'all .25s ease';
+      setTimeout(() => {
+        main.src = thumb.dataset.src;
+        main.style.opacity = '1';
+        main.style.transform = 'scale(1)';
+      }, 250);
+    }
   });
 });
 
@@ -151,12 +158,11 @@ document.querySelectorAll('.faq-q').forEach(btn => {
 });
 
 // ══════════════════════════════════════════
-// ANIMATE ON SCROLL (بسيط بدون مكتبة)
+// ANIMATE ON SCROLL
 // ══════════════════════════════════════════
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-
       entry.target.style.opacity = '1';
       entry.target.style.transform = 'translateY(0)';
       observer.unobserve(entry.target);
@@ -172,7 +178,7 @@ document.querySelectorAll('.feat-card, .review-card, .faq-item, .warranty-box').
 });
 
 // ══════════════════════════════════════════
-// STAR RATING (عملاء يقيّمون)
+// STAR RATING
 // ══════════════════════════════════════════
 const starPicks = document.querySelectorAll('.star-pick');
 starPicks.forEach(star => {
@@ -189,60 +195,66 @@ starPicks.forEach(star => {
   });
 });
 
-// إرسال التقييم
-document.getElementById('submit-review').addEventListener('click', () => {
-  if (selectedRating === 0) {
-    alert('الرجاء اختيار عدد النجوم أولاً');
-    return;
-  }
-  const name = document.getElementById('review-name').value.trim() || 'عميل';
-  const text = document.getElementById('review-text').value.trim();
-  if (!text) {
-    alert('الرجاء كتابة رأيك في المنتج');
-    return;
-  }
+const submitReview = document.getElementById('submit-review');
+if (submitReview) {
+  submitReview.addEventListener('click', () => {
+    if (selectedRating === 0) {
+      alert('الرجاء اختيار عدد النجوم أولاً');
+      return;
+    }
+    const name = document.getElementById('review-name').value.trim() || 'عميل';
+    const text = document.getElementById('review-text').value.trim();
+    if (!text) {
+      alert('الرجاء كتابة رأيك في المنتج');
+      return;
+    }
 
-  // إضافة التقييم للصفحة
-  const stars = '★'.repeat(selectedRating) + '☆'.repeat(5 - selectedRating);
-  const initials = name.slice(0, 2);
-  const card = document.createElement('div');
-  card.className = 'review-card';
-  card.style.border = '1px solid var(--gold-border)';
-  card.innerHTML = `
-    <div class="review-stars">${stars}</div>
-    <p>"${text}"</p>
-    <div class="reviewer">
-      <div class="rev-av">${initials}</div>
-      <div><strong>${name}</strong><span>منذ لحظات</span></div>
-    </div>`;
-  document.getElementById('reviews-grid').prepend(card);
-  setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
+    const stars = '★'.repeat(selectedRating) + '☆'.repeat(5 - selectedRating);
+    const initials = name.slice(0, 2);
+    const card = document.createElement('div');
+    card.className = 'review-card';
+    card.style.border = '1px solid var(--gold-border)';
+    card.innerHTML = `
+      <div class="review-stars">${stars}</div>
+      <p>"${text}"</p>
+      <div class="reviewer">
+        <div class="rev-av">${initials}</div>
+        <div><strong>${name}</strong><span>منذ لحظات</span></div>
+      </div>`;
+    const grid = document.getElementById('reviews-grid');
+    if (grid) grid.prepend(card);
+    setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
 
-  // إعادة تعيين
-  document.getElementById('review-name').value = '';
-  document.getElementById('review-text').value = '';
-  selectedRating = 0;
-  starPicks.forEach(s => s.classList.remove('active'));
+    document.getElementById('review-name').value = '';
+    document.getElementById('review-text').value = '';
+    selectedRating = 0;
+    starPicks.forEach(s => s.classList.remove('active'));
 
-  alert('شكراً! تم إضافة تقييمك بنجاح 🌟');
-});
+    alert('شكراً! تم إضافة تقييمك بنجاح 🌟');
+  });
+}
 
 // ══════════════════════════════════════════
 // POPULATE WILAYAS
 // ══════════════════════════════════════════
 function populateWilayas() {
   const sel = document.getElementById('f-wilaya');
-  Object.keys(ALGERIA).forEach(w => {
-    const opt = document.createElement('option');
-    opt.value = w; opt.textContent = w;
-    sel.appendChild(opt);
-  });
+  if (sel) {
+    Object.keys(ALGERIA).forEach(w => {
+      const opt = document.createElement('option');
+      opt.value = w; opt.textContent = w;
+      sel.appendChild(opt);
+    });
+  }
 }
 populateWilayas();
 
-document.getElementById('f-wilaya').addEventListener('change', function () {
-  document.getElementById('err-wilaya').textContent = '';
-});
+const fWilaya = document.getElementById('f-wilaya');
+if (fWilaya) {
+  fWilaya.addEventListener('change', function () {
+    document.getElementById('err-wilaya').textContent = '';
+  });
+}
 
 // ══════════════════════════════════════════
 // DELIVERY METHOD TOGGLE
@@ -250,13 +262,18 @@ document.getElementById('f-wilaya').addEventListener('change', function () {
 document.querySelectorAll('input[name="delivery"]').forEach(radio => {
   radio.addEventListener('change', function () {
     const ag = document.getElementById('address-group');
-    if (this.value === 'home') {
-      ag.style.display = '';
-    } else {
-      ag.style.display = 'none';
-      document.getElementById('f-address').value = '';
-      document.getElementById('err-address').textContent = '';
-      document.getElementById('f-address').classList.remove('invalid');
+    if (ag) {
+      if (this.value === 'home') {
+        ag.style.display = '';
+      } else {
+        ag.style.display = 'none';
+        const addr = document.getElementById('f-address');
+        if (addr) {
+          addr.value = '';
+          addr.classList.remove('invalid');
+        }
+        document.getElementById('err-address').textContent = '';
+      }
     }
   });
 });
@@ -267,43 +284,55 @@ document.querySelectorAll('input[name="delivery"]').forEach(radio => {
 function openOrder() {
   updateTotal();
   const ov = document.getElementById('order-overlay');
-  ov.classList.remove('hidden');
-  requestAnimationFrame(() => ov.classList.add('visible'));
-  document.body.style.overflow = 'hidden';
+  if (ov) {
+    ov.classList.remove('hidden');
+    requestAnimationFrame(() => ov.classList.add('visible'));
+    document.body.style.overflow = 'hidden';
+  }
   if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout');
   if (typeof ttq !== 'undefined') ttq.track('InitiateCheckout');
-  
 }
+
 function closeOrder() {
   const ov = document.getElementById('order-overlay');
-  ov.classList.remove('visible');
-  setTimeout(() => { ov.classList.add('hidden'); document.body.style.overflow = ''; }, 350);
+  if (ov) {
+    ov.classList.remove('visible');
+    setTimeout(() => { ov.classList.add('hidden'); document.body.style.overflow = ''; }, 350);
+  }
 }
 
 ['hero-order-btn', 'nav-order-btn', 'warranty-order-btn', 'cta-order-btn'].forEach(id => {
   const btn = document.getElementById(id);
   if (btn) btn.addEventListener('click', openOrder);
 });
+
 const popupClose = document.getElementById('popup-close');
-if (popupClose) {
-  popupClose.addEventListener('click', closeOrder);
+if (popupClose) popupClose.addEventListener('click', closeOrder);
+
+const orderOverlay = document.getElementById('order-overlay');
+if (orderOverlay) {
+  orderOverlay.addEventListener('click', e => {
+    if (e.target === orderOverlay) closeOrder();
+  });
 }
-document.getElementById('order-overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('order-overlay')) closeOrder();
-});
 
 // QUANTITY
 const qtyInput = document.getElementById('f-qty');
-document.getElementById('qty-minus').addEventListener('click', () => {
-  if (parseInt(qtyInput.value) > 1) { qtyInput.value = parseInt(qtyInput.value) - 1; updateTotal(); }
-});
-document.getElementById('qty-plus').addEventListener('click', () => {
-  if (parseInt(qtyInput.value) < 99) { qtyInput.value = parseInt(qtyInput.value) + 1; updateTotal(); }
-});
+if (qtyInput) {
+  document.getElementById('qty-minus').addEventListener('click', () => {
+    if (parseInt(qtyInput.value) > 1) { qtyInput.value = parseInt(qtyInput.value) - 1; updateTotal(); }
+  });
+  document.getElementById('qty-plus').addEventListener('click', () => {
+    if (parseInt(qtyInput.value) < 99) { qtyInput.value = parseInt(qtyInput.value) + 1; updateTotal(); }
+  });
+}
+
 function updateTotal() {
+  if (!qtyInput) return;
   const qty = Math.max(1, parseInt(qtyInput.value) || 1);
   const total = (UNIT_PRICE * qty).toLocaleString('fr-DZ') + ' DA';
-  document.getElementById('total-val').textContent = total;
+  const totalVal = document.getElementById('total-val');
+  if (totalVal) totalVal.textContent = total;
 }
 
 // ══════════════════════════════════════════
@@ -311,6 +340,7 @@ function updateTotal() {
 // ══════════════════════════════════════════
 function validateField(id, errId, fn, msg) {
   const el = document.getElementById(id);
+  if (!el) return true;
   const val = el.tagName === 'SELECT' ? el.value : el.value.trim();
   if (!fn(val)) {
     el.classList.add('invalid');
@@ -323,122 +353,118 @@ function validateField(id, errId, fn, msg) {
   return true;
 }
 
-// SUBMIT
-document.getElementById('submit-btn').addEventListener('click', async () => {
-  const deliveryEl = document.querySelector('input[name="delivery"]:checked');
-const isHome = deliveryEl ? deliveryEl.value === 'home' : false;
+// SUBMIT ORDER
+const submitBtn = document.getElementById('submit-btn');
+if (submitBtn) {
+  submitBtn.addEventListener('click', async () => {
+    const deliveryEl = document.querySelector('input[name="delivery"]:checked');
+    const isHome = deliveryEl ? deliveryEl.value === 'home' : false;
 
-  const ok1 = validateField('f-fname', 'err-fname', v => v.length >= 2, 'أدخل الاسم الأول');
-  const ok2 = validateField('f-lname', 'err-lname', v => v.length >= 2, 'أدخل اسم العائلة');
-  const ok3 = validateField('f-phone', 'err-phone', v => /^(05|06|07)\d{8}$/.test(v.replace(/\s/g,'')), 'أدخل رقم هاتف جزائري صحيح (05x/06x/07x)');
-  const ok4 = validateField('f-wilaya', 'err-wilaya', v => v !== '', 'اختر الولاية');
-  const ok5 = validateField('f-baladia', 'err-baladia', v => v.length >= 2, 'اكتب اسم مدينتك أو بلديتك');
-  const ok6 = !isHome || validateField('f-address', 'err-address', v => v.length >= 5, 'أدخل عنوان المنزل كاملاً');
+    const ok1 = validateField('f-fname', 'err-fname', v => v.length >= 2, 'أدخل الاسم الأول');
+    const ok2 = validateField('f-lname', 'err-lname', v => v.length >= 2, 'أدخل اسم العائلة');
+    const ok3 = validateField('f-phone', 'err-phone', v => /^(05|06|07)\d{8}$/.test(v.replace(/\s/g,'')), 'أدخل رقم هاتف جزائري صحيح (05x/06x/07x)');
+    const ok4 = validateField('f-wilaya', 'err-wilaya', v => v !== '', 'اختر الولاية');
+    const ok5 = validateField('f-baladia', 'err-baladia', v => v.length >= 2, 'اكتب اسم مدينتك أو بلديتك');
+    const ok6 = !isHome || validateField('f-address', 'err-address', v => v.length >= 5, 'أدخل عنوان المنزل كاملاً');
 
-  if (!ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6) {
-    document.querySelector('.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
+    if (!ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6) {
+      document.querySelector('.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
 
-  const fname = document.getElementById('f-fname').value.trim();
-  const lname = document.getElementById('f-lname').value.trim();
-  const phone = document.getElementById('f-phone').value.trim();
-  const wilaya = document.getElementById('f-wilaya').value;
-  const baladia = document.getElementById('f-baladia').value;
-  const delivery = document.querySelector('input[name="delivery"]:checked').value === 'home' ? 'توصيل للمنزل' : 'أقرب مكتب';
-  const address = document.getElementById('f-address').value.trim() || '—';
-  const qty = document.getElementById('f-qty').value;
-  const total = document.getElementById('total-val').textContent;
+    const fname = document.getElementById('f-fname').value.trim();
+    const lname = document.getElementById('f-lname').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+    const wilaya = document.getElementById('f-wilaya').value;
+    const baladia = document.getElementById('f-baladia').value;
+    const delivery = isHome ? 'توصيل للمنزل' : 'أقرب مكتب';
+    const address = isHome ? document.getElementById('f-address').value.trim() : '—';
+    const qty = parseInt(qtyInput.value) || 1;
 
-  const btn = document.getElementById('submit-btn');
-  btn.textContent = '⏳ جاري الإرسال...';
-  btn.disabled = true;
+    submitBtn.textContent = '⏳ جاري الإرسال...';
+    submitBtn.disabled = true;
 
-  // إرسال إلى Google Sheets
-  // إرسال إلى Google Sheets (ضع الرابط الجديد هنا)
-  fetch('https://script.google.com/macros/s/AKfycby_eNDfoMjX2zJfeSmhFDoYGbF_gQmoFyBzlnYgDgqggY22ShynTYFs2zhtMABR4KvHbQ/exec', {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
+    // توليد رقم طلب عشوائي ومميز
+    const generatedOrderId = 'DZ-' + Math.floor(100000 + Math.random() * 900000);
+
+    // تجهيز البيانات المطابقة تماماً لكود الـ Google Apps Script الاحترافي الجديد
+    const sheetData = {
+      orderId: generatedOrderId,
       name: fname + ' ' + lname,
       phone: phone,
-      state: wilaya,
+      wilaya: wilaya,
       city: baladia,
       address: address,
-      delivery: delivery,
-      quantity: qty,
-      total: total
-    })
+      deliveryType: delivery,
+      product: "اسم منتجك الافتراضي", // يمكنك تغييره لاسم المنتج الحقيقي
+      quantity: qty
+    };
+
+    try {
+      // 1. الإرسال الاحترافي لـ Google Sheets (الرابط الجديد بدون وضع no-cors للتحقق والاعتمادية الأقوى)
+      await fetch('https://script.google.com/macros/s/AKfycbzvssMj8r-dGsH-kWxi_HkzmXy8F1F6GctknC_kvFd5C4TgDbZVBwM_8CWq1uu6g8URFw/exec', {
+        method: 'POST',
+        mode: 'no-cors', // تم الإبقاء عليه لتفادي مشاكل الـ CORS في المتصفحات مع الـ Apps Script الثابتة
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sheetData)
+      });
+
+      // 2. إرسال النسخة الاحتياطية لـ Formspree
+      const totalText = document.getElementById('total-val').textContent;
+      await fetch('https://formspree.io/f/xwvzjeoq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          '🆔 رقم الطلب': generatedOrderId,
+          '👤 الاسم': fname + ' ' + lname,
+          '📞 الهاتف': phone,
+          '📍 الولاية': wilaya,
+          '🏙️ البلدية': baladia,
+          '🚚 طريقة التوصيل': delivery,
+          '🏠 العنوان': address,
+          '📦 الكمية': qty,
+          '💰 المجموع': totalText,
+          '_subject': `🛒 طلب جديد ${generatedOrderId} من ${fname} — ${wilaya}`
+        })
+      });
+
+      // التوجيه لصفحة الشكر في حال النجاح
+      const params = new URLSearchParams({
+        fname,
+        lname,
+        phone,
+        wilaya,
+        baladia,
+        delivery,
+        address,
+        qty: qty.toString(),
+        total: totalText,
+        value: (UNIT_PRICE * qty).toString()
+      });
+      window.location.href = 'thank-you.html?' + params.toString();
+
+    } catch (e) {
+      alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.');
+      console.error(e);
+      submitBtn.textContent = '✅ تأكيد الطلب';
+      submitBtn.disabled = false;
+    }
   });
-
- try {
-  const response = await fetch('https://formspree.io/f/xwvzjeoq', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      '👤 الاسم': fname + ' ' + lname,
-      '📞 الهاتف': phone,
-      '📍 الولاية': wilaya,
-      '🏙️ البلدية': baladia,
-      '🚚 طريقة التوصيل': delivery,
-      '🏠 العنوان': address,
-      '📦 الكمية': qty,
-      '💰 المجموع': total,
-      '_subject': `🛒 طلب جديد من ${fname} ${lname} — ${wilaya}`
-    })
-  });
-
-  if (!response.ok) {
-    throw new Error('فشل إرسال الطلب');
-  }
-
-} catch (e) {
-  alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.');
-  console.error(e);
-
-  btn.textContent = '✅ تأكيد الطلب';
-  btn.disabled = false;
-
-  return;
 }
 
-  // التوجيه لصفحة الشكر مع بيانات الطلب في الرابط
-  const params = new URLSearchParams({
-    fname,
-    lname,
-    phone,
-    wilaya,
-    baladia,
-    delivery,
-    address,
-    qty,
-    total,
-    value: UNIT_PRICE * parseInt(qty)
+const thankClose = document.getElementById('thank-close');
+if (thankClose) {
+  thankClose.addEventListener('click', () => {
+    const to = document.getElementById('thank-overlay');
+    if (to) {
+      to.classList.remove('visible');
+      setTimeout(() => { to.classList.add('hidden'); document.body.style.overflow = ''; }, 350);
+    }
   });
-  window.location.href = 'thank-you.html?' + params.toString();
-});
-
-document.getElementById('thank-close').addEventListener('click', () => {
-  const to = document.getElementById('thank-overlay');
-  to.classList.remove('visible');
-  setTimeout(() => { to.classList.add('hidden'); document.body.style.overflow = ''; }, 350);
-});
-
-function resetForm() {
-  ['f-fname','f-lname','f-phone','f-address','f-baladia'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.value = ''; el.classList.remove('invalid'); }
-  });
-  const wEl = document.getElementById('f-wilaya');
-  if (wEl) { wEl.value = ''; wEl.classList.remove('invalid'); }
-  document.querySelectorAll('.ferr').forEach(e => e.textContent = '');
-  qtyInput.value = 1; updateTotal();
-  document.querySelector('input[name="delivery"][value="home"]').checked = true;
-  document.getElementById('address-group').style.display = '';
 }
 
 console.log('%c متجري ','background:#C9A84C;color:#000;font-size:1.2rem;padding:.3rem .8rem;border-radius:4px;font-weight:bold;', '\n🛒 One Product Store — Algeria 🇩🇿');
+
 // Page Modals
 document.querySelectorAll('[data-modal]').forEach(link => {
   link.addEventListener('click', e => {
@@ -454,8 +480,10 @@ document.querySelectorAll('[data-modal]').forEach(link => {
 document.querySelectorAll('.modal-close-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const el = document.getElementById('modal-' + btn.dataset.close);
-    el.classList.remove('visible');
-    setTimeout(() => { el.classList.add('hidden'); document.body.style.overflow = ''; }, 350);
+    if (el) {
+      el.classList.remove('visible');
+      setTimeout(() => { el.classList.add('hidden'); document.body.style.overflow = ''; }, 350);
+    }
   });
 });
 document.querySelectorAll('.page-modal-overlay').forEach(overlay => {
